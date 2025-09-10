@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
+import axios from "axios";
 export type Form = {
   email: string;
   password: string;
@@ -15,8 +16,14 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const [form, setForm] = useState<Form>({ email: "", password: "" });
-  console.log(form);
 
+  const postData = async () => {
+    const response = await axios.post(`http://localhost:4007/login`, form);
+    console.log(response);
+    localStorage.setItem("token", response.data.token);
+    localStorage.setItem("user", JSON.stringify(response.data.user));
+    console.log(response, form);
+  };
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
@@ -24,10 +31,10 @@ export function LoginForm({
           <form className="p-6 md:p-8">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
-                <h1 className="text-2xl font-bold">Welcome back</h1>
-                <p className="text-muted-foreground text-balance">
+                <h1 className="text-2xl font-bold">Login</h1>
+                {/* <p className="text-muted-foreground text-balance">
                   Login to your Acme Inc account
-                </p>
+                </p> */}
               </div>
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
@@ -43,12 +50,12 @@ export function LoginForm({
               <div className="grid gap-3">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
-                  <a
+                  {/* <a
                     href="#"
                     className="ml-auto text-sm underline-offset-2 hover:underline"
                   >
                     Forgot your password?
-                  </a>
+                  </a> */}
                 </div>
                 <Input
                   id="password"
@@ -60,10 +67,14 @@ export function LoginForm({
                   required
                 />
               </div>
-              <Button type="submit" className="w-full">
+              <Button
+                type="submit"
+                className="w-full"
+                onClick={() => postData()}
+              >
                 Login
               </Button>
-              <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
+              {/* <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
                 <span className="bg-card text-muted-foreground relative z-10 px-2">
                   Or continue with
                 </span>
@@ -74,7 +85,7 @@ export function LoginForm({
                 <a href="#" className="underline underline-offset-4">
                   Sign up
                 </a>
-              </div>
+              </div> */}
             </div>
           </form>
           {/* <div className="bg-muted relative hidden md:block">

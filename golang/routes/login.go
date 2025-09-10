@@ -20,13 +20,13 @@ type LoginRequest struct {
 
 type LoginResponse struct {
 	Message string `json:"message"`
+	Token string `json:"token"`
 	User    struct {
 		ID       string `json:"id,omitempty"`
 		Username string `json:"username"`
 		Email    string `json:"email"`
 	} `json:"user"`
 }
-
 func Login(c *gin.Context) {
 	collection := config.DB.Collection("users")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -59,8 +59,11 @@ func Login(c *gin.Context) {
 		return
 	}
 
+
+
 	response := LoginResponse{
 		Message: "Login successful",
+		Token:"12345",
 	}
 	response.User.Username = user.Username
 	response.User.Email = user.Email
