@@ -9,21 +9,17 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Register user
 func RegisterUser(c *gin.Context) {
 	var input models.User
 
-	// Bind JSON → struct
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	// Hash password
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(input.Password), 14)
 	input.Password = string(hashedPassword)
 
-	// Save DB
 	if err := config.DB.Create(&input).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "User already exists"})
 		return
