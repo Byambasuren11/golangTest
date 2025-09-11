@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import axios from "axios";
+
 export type Form = {
   email: string;
   password: string;
@@ -17,24 +18,27 @@ export function LoginForm({
 }: React.ComponentProps<"div">) {
   const [form, setForm] = useState<Form>({ email: "", password: "" });
 
-  const postData = async () => {
-    const response = await axios.post(`http://localhost:4007/login`, form);
-    console.log(response);
-    localStorage.setItem("token", response.data.token);
-    localStorage.setItem("user", JSON.stringify(response.data.user));
-    console.log(response, form);
+  const postData = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(`http://localhost:8080/login`, form);
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+      alert("Login successful");
+    } catch (err) {
+      console.error("Login error:", err);
+      alert("Invalid email or password");
+    }
   };
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-1">
-          <form className="p-6 md:p-8">
+          <form className="p-6 md:p-8" onSubmit={postData}>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">Login</h1>
-                {/* <p className="text-muted-foreground text-balance">
-                  Login to your Acme Inc account
-                </p> */}
               </div>
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
@@ -43,58 +47,29 @@ export function LoginForm({
                   type="email"
                   placeholder="m@example.com"
                   required
-                  value={form?.email}
+                  value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                 />
               </div>
               <div className="grid gap-3">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
-                  {/* <a
-                    href="#"
-                    className="ml-auto text-sm underline-offset-2 hover:underline"
-                  >
-                    Forgot your password?
-                  </a> */}
                 </div>
                 <Input
                   id="password"
                   type="password"
-                  value={form?.password}
+                  required
+                  value={form.password}
                   onChange={(e) =>
                     setForm({ ...form, password: e.target.value })
                   }
-                  required
                 />
               </div>
-              <Button
-                type="submit"
-                className="w-full"
-                onClick={() => postData()}
-              >
+              <Button className="w-full" type="submit">
                 Login
               </Button>
-              {/* <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
-                <span className="bg-card text-muted-foreground relative z-10 px-2">
-                  Or continue with
-                </span>
-              </div>
-
-              <div className="text-center text-sm">
-                Don&apos;t have an account?{" "}
-                <a href="#" className="underline underline-offset-4">
-                  Sign up
-                </a>
-              </div> */}
             </div>
           </form>
-          {/* <div className="bg-muted relative hidden md:block">
-            <img
-              src="/placeholder.svg"
-              alt="Image"
-              className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-            />
-          </div> */}
         </CardContent>
       </Card>
     </div>
