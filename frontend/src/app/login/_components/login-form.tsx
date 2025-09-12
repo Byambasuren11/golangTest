@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import axios from "axios";
+import {useRouter} from "next/navigation"
 
 export type Form = {
   email: string;
@@ -17,6 +18,7 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const [form, setForm] = useState<Form>({ email: "", password: "" });
+  const router = useRouter();
 
   const postData = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,6 +27,7 @@ export function LoginForm({
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
       alert("Login successful");
+      router.push("/")
     } catch (err) {
       console.error("Login error:", err);
       alert("Invalid email or password");
